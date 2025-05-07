@@ -1,0 +1,67 @@
+# Visual Studio キャッシュ/オプションディレクトリ
+.vs/
+.vscode/
+*.userosscache
+*.sln.docstates
+
+# ビルド結果
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studioのプロジェクトファイル
+*.tmp
+*.tmp_proj
+*_i.c
+*_p.c
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.log
+*.vspscc
+*.vssscc
+.builds
+
+# Visual Basic 固有のファイル
+*.vbw
+*.vbp
+*.vbg
+*.frx
+*.exe.config
+
+# Windows固有のファイル
+Thumbs.db
+Desktop.ini
+
+# テンポラリファイル
+*.bak
+*~
+*.swp
+
+# ユーザー固有の設定ファイル
+*.user
+*.suo
+
+# パッケージフォルダ
+packages/
+
+# プロジェクト固有の設定
+!.gitignore
