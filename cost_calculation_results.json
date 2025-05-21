@@ -1,0 +1,264 @@
+[
+    {
+        "course_name": "コースA",
+        "description": "季節の味覚を楽しむスタンダードコース",
+        "dishes_cost": [
+            {
+                "dish_name": "ホタテのポワレ トリュフ風味",
+                "cost": 2285.0,
+                "ingredients": [
+                    {
+                        "name": "ホタテ",
+                        "quantity": 80,
+                        "unit_price": 25.5,
+                        "cost": 2040.0
+                    },
+                    {
+                        "name": "アスパラガス",
+                        "quantity": 30,
+                        "unit_price": 5.0,
+                        "cost": 150.0
+                    },
+                    {
+                        "name": "トリュフオイル",
+                        "quantity": 5,
+                        "unit_price": 15.0,
+                        "cost": 75.0
+                    },
+                    {
+                        "name": "バター",
+                        "quantity": 10,
+                        "unit_price": 2.0,
+                        "cost": 20.0
+                    }
+                ]
+            },
+            {
+                "dish_name": "じゃがいもの冷製スープ",
+                "cost": 410.0,
+                "ingredients": [
+                    {
+                        "name": "ジャガイモ",
+                        "quantity": 150,
+                        "unit_price": 1.5,
+                        "cost": 225.0
+                    },
+                    {
+                        "name": "生クリーム",
+                        "quantity": 50,
+                        "unit_price": 3.5,
+                        "cost": 175.0
+                    },
+                    {
+                        "name": "ニンニク",
+                        "quantity": 5,
+                        "unit_price": 2.0,
+                        "cost": 10.0
+                    }
+                ]
+            },
+            {
+                "dish_name": "鴨肉のロースト ベリーソース",
+                "cost": 4888.0,
+                "ingredients": [
+                    {
+                        "name": "鴨肉",
+                        "quantity": 150,
+                        "unit_price": 30.0,
+                        "cost": 4500.0
+                    },
+                    {
+                        "name": "ベリー類",
+                        "quantity": 50,
+                        "unit_price": 7.0,
+                        "cost": 350.0
+                    },
+                    {
+                        "name": "バター",
+                        "quantity": 15,
+                        "unit_price": 2.0,
+                        "cost": 30.0
+                    },
+                    {
+                        "name": "砂糖",
+                        "quantity": 10,
+                        "unit_price": 0.8,
+                        "cost": 8.0
+                    }
+                ]
+            },
+            {
+                "dish_name": "季節のフルーツタルト",
+                "cost": 607.0,
+                "ingredients": [
+                    {
+                        "name": "ベリー類",
+                        "quantity": 60,
+                        "unit_price": 7.0,
+                        "cost": 420.0
+                    },
+                    {
+                        "name": "小麦粉",
+                        "quantity": 50,
+                        "unit_price": 0.5,
+                        "cost": 25.0
+                    },
+                    {
+                        "name": "バター",
+                        "quantity": 30,
+                        "unit_price": 2.0,
+                        "cost": 60.0
+                    },
+                    {
+                        "name": "砂糖",
+                        "quantity": 40,
+                        "unit_price": 0.8,
+                        "cost": 32.0
+                    },
+                    {
+                        "name": "生クリーム",
+                        "quantity": 20,
+                        "unit_price": 3.5,
+                        "cost": 70.0
+                    }
+                ]
+            }
+        ],
+        "subtotal_cost": 8190.0,
+        "discount_info": {
+            "rule_id": "standard",
+            "condition": "コース合計原価が5000円以上の場合",
+            "discount_amount": 409.5,
+            "applied": true
+        },
+        "total_cost": 7780.5
+    },
+    {
+        "course_name": "コースB",
+        "description": "贅沢な食材をふんだんに使ったプレミアムコース",
+        "dishes_cost": [
+            {
+                "dish_name": "キャビアとホタテのカルパッチョ",
+                "cost": 2400.0,
+                "ingredients": [
+                    {
+                        "name": "キャビア",
+                        "quantity": 15,
+                        "unit_price": 50.0,
+                        "cost": 750.0
+                    },
+                    {
+                        "name": "ホタテ",
+                        "quantity": 60,
+                        "unit_price": 25.5,
+                        "cost": 1530.0
+                    },
+                    {
+                        "name": "トリュフオイル",
+                        "quantity": 8,
+                        "unit_price": 15.0,
+                        "cost": 120.0
+                    }
+                ]
+            },
+            {
+                "dish_name": "フォアグラのポタージュ",
+                "cost": 3395.0,
+                "ingredients": [
+                    {
+                        "name": "フォアグラ",
+                        "quantity": 50,
+                        "unit_price": 60.0,
+                        "cost": 3000.0
+                    },
+                    {
+                        "name": "ジャガイモ",
+                        "quantity": 100,
+                        "unit_price": 1.5,
+                        "cost": 150.0
+                    },
+                    {
+                        "name": "生クリーム",
+                        "quantity": 70,
+                        "unit_price": 3.5,
+                        "cost": 245.0
+                    }
+                ]
+            },
+            {
+                "dish_name": "仔羊の香草焼き ローズマリー風味",
+                "cost": 8275.0,
+                "ingredients": [
+                    {
+                        "name": "仔羊肉",
+                        "quantity": 180,
+                        "unit_price": 45.0,
+                        "cost": 8100.0
+                    },
+                    {
+                        "name": "ローズマリー",
+                        "quantity": 5,
+                        "unit_price": 3.0,
+                        "cost": 15.0
+                    },
+                    {
+                        "name": "ニンニク",
+                        "quantity": 10,
+                        "unit_price": 2.0,
+                        "cost": 20.0
+                    },
+                    {
+                        "name": "ジャガイモ",
+                        "quantity": 80,
+                        "unit_price": 1.5,
+                        "cost": 120.0
+                    },
+                    {
+                        "name": "バター",
+                        "quantity": 10,
+                        "unit_price": 2.0,
+                        "cost": 20.0
+                    }
+                ]
+            },
+            {
+                "dish_name": "濃厚チョコレートムース",
+                "cost": 1054.0,
+                "ingredients": [
+                    {
+                        "name": "チョコレート",
+                        "quantity": 80,
+                        "unit_price": 8.0,
+                        "cost": 640.0
+                    },
+                    {
+                        "name": "生クリーム",
+                        "quantity": 100,
+                        "unit_price": 3.5,
+                        "cost": 350.0
+                    },
+                    {
+                        "name": "砂糖",
+                        "quantity": 30,
+                        "unit_price": 0.8,
+                        "cost": 24.0
+                    },
+                    {
+                        "name": "バター",
+                        "quantity": 20,
+                        "unit_price": 2.0,
+                        "cost": 40.0
+                    }
+                ]
+            }
+        ],
+        "subtotal_cost": 15124.0,
+        "discount_info": {
+            "rule_id": "premium",
+            "condition": "常に適用",
+            "discount_amount": 500,
+            "applied": true
+        },
+        "total_cost": 14624.0
+    }
+]

@@ -185,15 +185,35 @@ def calculate_course_cost(course_id, ingredient_prices):
         "total_cost": final_course_cost
     }
 
+# --- データ保存 ---
+def save_course_costs_to_json(course_results, filepath):
+    """
+    コース原価計算結果のリストをJSONファイルに保存する。
+
+    Args:
+        course_results (list): calculate_course_cost の結果の辞書を含むリスト。
+        filepath (str): 出力するJSONファイルのパス。
+    """
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(course_results, f, ensure_ascii=False, indent=4)
+        print(f"コース原価計算結果を {filepath} に保存しました。")
+    except IOError:
+        print(f"エラー: ファイル '{filepath}' に書き込めませんでした。")
+    except Exception as e:
+        print(f"予期せぬエラーが発生しました: {e}")
+
 # --- メイン実行ブロック (テスト用) ---
 if __name__ == "__main__":
     try:
         prices = load_ingredient_prices()
 
         # 全コースの原価を計算して表示
+        all_course_results = [] # 1. Create an empty list
         for course_id in COURSES:
             course_result = calculate_course_cost(course_id, prices)
             if course_result:
+                all_course_results.append(course_result) # 2. Append result to the list
                 # 結果を整形して表示（ここでは簡易表示）
                 print(f"\n===== {course_result['course_name']} =====")
                 print(f"説明: {course_result['description']}")
@@ -207,6 +227,10 @@ if __name__ == "__main__":
                     print(f"割引 ({course_result['discount_info']['condition']}): -{course_result['discount_info']['discount_amount']:.2f}")
                 print(f"合計原価: {course_result['total_cost']:.2f}")
                 print("=" * (len(course_result['course_name']) + 10))
+        
+        # 3. Save all results to JSON file
+        if all_course_results: # Only save if there are results
+            save_course_costs_to_json(all_course_results, "cost_calculation_results.json")
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"処理を中断しました: {e}")
