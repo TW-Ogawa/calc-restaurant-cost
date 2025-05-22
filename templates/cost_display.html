@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course_name }} 原価表示</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .total-cost {
+            text-align: center;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #e7e7e7;
+            border-radius: 4px;
+        }
+        .dish {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .dish-header {
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .dish-header:hover {
+            background-color: #f0f0f0;
+        }
+        .dish-ingredients {
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+            padding-left: 20px;
+            border-left: 3px solid #007bff;
+        }
+        .ingredient {
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: #f9f9f9;
+            border-radius: 3px;
+        }
+        .ingredient p {
+            margin: 2px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ course_name }} 原価表示</h1>
+
+        <div class="total-cost">
+            <strong>総原価: ¥{{ total_cost | round(2) }}</strong>
+        </div>
+
+        <h2>料理一覧</h2>
+        {% for dish in dishes_cost %}
+        <div class="dish">
+            <div class="dish-header" onclick="toggleIngredients('ingredients-{{ loop.index }}')">
+                <span>{{ dish.dish_name }}</span>
+                <span>¥{{ dish.cost | round(2) }}</span>
+            </div>
+            <div id="ingredients-{{ loop.index }}" class="dish-ingredients">
+                <h4>材料詳細:</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>材料名</th>
+                            <th>数量</th>
+                            <th>単価 (¥)</th>
+                            <th>小計 (¥)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ingredient in dish.ingredients %}
+                        <tr>
+                            <td>{{ ingredient.name }}</td>
+                            <td>{{ ingredient.quantity }}</td>
+                            <td>{{ ingredient.unit_price | round(2) }}</td>
+                            <td>{{ ingredient.cost | round(2) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleIngredients(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                if (element.style.display === 'none' || element.style.display === '') {
+                    element.style.display = 'block';
+                } else {
+                    element.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

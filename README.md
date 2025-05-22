@@ -28,3 +28,20 @@ DeepWiki (または Devin) を使用して、このリポジトリ内の情報�
     4.  **計算ロジックの補足:** `src/cost_calculator.py` のコメントや `docs/pricing_policy.md` から重要な点を抜粋。
 
 このドキュメントにより、メニュー開発や価格設定の見直しを行う際に、原価構造を容易に理解できるようにしてください。
+
+## Web Application Usage
+
+### Setup
+
+Install the required packages using pip:
+```bash
+pip install -r requirements.txt
+```
+
+### Running the Application
+
+Run the web application using:
+```bash
+python app.py
+```
+Open your web browser and navigate to `http://127.0.0.1:5001/` or `http://127.0.0.1:5001/course/コースA` to view the cost display.
