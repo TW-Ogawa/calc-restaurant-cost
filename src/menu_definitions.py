@@ -9,12 +9,38 @@ COURSES = {
     "コースA": {
         "description": "季節の味覚を楽しむスタンダードコース",
         "dishes": ["前菜A", "スープA", "メインA_鴨", "デザートA"],
-        "discount_rule": "standard" # 適用する割引ルールID
+        "discount_rule": "standard", # 適用する割引ルールID
+        "available_drinks": ["WINE_RED", "WINE_WHITE", "CHAMPAGNE", "BEER", "ORANGE_JUICE"]
     },
     "コースB": {
         "description": "贅沢な食材をふんだんに使ったプレミアムコース",
         "dishes": ["前菜B", "スープB", "メインB_仔羊", "デザートB"],
-        "discount_rule": "premium" # 適用する割引ルールID
+        "discount_rule": "premium", # 適用する割引ルールID
+        "available_drinks": ["WINE_RED", "WINE_WHITE", "CHAMPAGNE", "BEER", "ORANGE_JUICE"]
+    }
+}
+
+# ドリンクの定義
+DRINKS = {
+    "WINE_RED": {
+        "name": "ワイン (赤)",
+        "price": 800
+    },
+    "WINE_WHITE": {
+        "name": "ワイン (白)",
+        "price": 800
+    },
+    "CHAMPAGNE": {
+        "name": "シャンパン",
+        "price": 1200
+    },
+    "BEER": {
+        "name": "ビール",
+        "price": 600
+    },
+    "ORANGE_JUICE": {
+        "name": "オレンジジュース",
+        "price": 400
     }
 }
 

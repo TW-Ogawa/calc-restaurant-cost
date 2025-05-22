@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from menu_definitions import COURSES, DISHES, DISCOUNT_RULES
+from menu_definitions import COURSES, DISHES, DISCOUNT_RULES, DRINKS
 
 # --- データ読み込み ---
 def load_ingredient_prices(filepath="data/ingredient_prices.json"):
@@ -85,13 +85,14 @@ def calculate_dish_cost(dish_id, ingredient_prices):
 
     return total_cost, ingredient_details
 
-def calculate_course_cost(course_id, ingredient_prices):
+def calculate_course_cost(course_id, ingredient_prices, selected_drinks=None):
     """
     指定されたコースIDの合計原価と詳細を計算する。
 
     Args:
         course_id (str): menu_definitions.py で定義されたコースのID。
         ingredient_prices (dict): 食材名と単価の辞書。
+        selected_drinks (list, optional): 選択されたドリンクIDのリスト。デフォルトは None。
 
     Returns:
         dict: コースの原価計算結果を含む辞書。
@@ -111,9 +112,15 @@ def calculate_course_cost(course_id, ingredient_prices):
             'discount_amount': 割引額,
             'applied': 割引が適用されたか (bool)
         },
-        'total_cost': 最終的なコース原価
+        'total_food_cost': 最終的な料理原価 (割引後),
+        'selected_drinks_info': [ {'name': ドリンク名, 'price': ドリンク価格}, ... ],
+        'drinks_total_cost': ドリンク合計価格,
+        'total_cost': 最終的なコース原価 (料理 + ドリンク)
     }
     """
+    if selected_drinks is None:
+        selected_drinks = []
+
     if course_id not in COURSES:
         print(f"エラー: コースID '{course_id}' が定義に存在しません。")
         return None
@@ -166,8 +173,29 @@ def calculate_course_cost(course_id, ingredient_prices):
 
     # 3. 最終的なコース原価を計算
     #    最終原価 = 割引前合計原価 - 割引額
-    final_course_cost = course_total_cost - discount_amount
-    print(f"  最終合計原価: {final_course_cost:.2f} 円")
+    final_course_food_cost = course_total_cost - discount_amount
+    print(f"  最終料理原価 (割引適用後): {final_course_food_cost:.2f} 円")
+
+    # 4. 選択されたドリンクのコストを計算
+    drinks_total_cost = 0
+    selected_drinks_details = []
+    if selected_drinks:
+        print("  --- 選択ドリンク ---")
+        for drink_id in selected_drinks:
+            drink_info = DRINKS.get(drink_id)
+            if drink_info:
+                drink_name = drink_info["name"]
+                drink_price = drink_info["price"]
+                drinks_total_cost += drink_price
+                selected_drinks_details.append({"name": drink_name, "price": drink_price})
+                print(f"    - {drink_name}: {drink_price:.2f} 円")
+            else:
+                print(f"警告: ドリンクID '{drink_id}' は定義に存在しません。")
+        print(f"  ドリンク合計価格: {drinks_total_cost:.2f} 円")
+
+    # 5. 最終的な総原価を計算 (料理 + ドリンク)
+    final_course_cost_with_drinks = final_course_food_cost + drinks_total_cost
+    print(f"  最終合計原価 (ドリンク込み): {final_course_cost_with_drinks:.2f} 円")
     print(f"--- コース '{course_id}' の原価計算終了 ---")
 
 
@@ -175,14 +203,17 @@ def calculate_course_cost(course_id, ingredient_prices):
         "course_name": course_id,
         "description": course_info["description"],
         "dishes_cost": dishes_cost_details,
-        "subtotal_cost": course_total_cost,
+        "subtotal_cost": course_total_cost, # 料理の割引前合計
         "discount_info": {
             "rule_id": discount_rule_id,
             "condition": rule["condition"],
             "discount_amount": discount_amount,
             "applied": applied
         },
-        "total_cost": final_course_cost
+        "total_food_cost": final_course_food_cost, # 料理の割引後合計
+        "selected_drinks_info": selected_drinks_details,
+        "drinks_total_cost": drinks_total_cost,
+        "total_cost": final_course_cost_with_drinks # 最終的な総原価
     }
 
 # --- メイン実行ブロック (テスト用) ---
@@ -190,23 +221,68 @@ if __name__ == "__main__":
     try:
         prices = load_ingredient_prices()
 
-        # 全コースの原価を計算して表示
-        for course_id in COURSES:
-            course_result = calculate_course_cost(course_id, prices)
-            if course_result:
-                # 結果を整形して表示（ここでは簡易表示）
-                print(f"\n===== {course_result['course_name']} =====")
-                print(f"説明: {course_result['description']}")
-                for dish in course_result['dishes_cost']:
-                    print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
-                    # 食材詳細も表示する場合は以下をアンコメント
-                    # for ing in dish['ingredients']:
-                    #    print(f"    - {ing['name']} ({ing['quantity']}) @{ing['unit_price']} = {ing['cost']:.2f}")
-                print(f"小計: {course_result['subtotal_cost']:.2f}")
-                if course_result['discount_info']['applied']:
-                    print(f"割引 ({course_result['discount_info']['condition']}): -{course_result['discount_info']['discount_amount']:.2f}")
-                print(f"合計原価: {course_result['total_cost']:.2f}")
-                print("=" * (len(course_result['course_name']) + 10))
+        # --- コースAのテスト ---
+        print("\n--- コースA (ドリンクなし) ---")
+        course_a_result_no_drinks = calculate_course_cost("コースA", prices)
+        if course_a_result_no_drinks:
+            # 結果を整形して表示
+            print(f"\n===== {course_a_result_no_drinks['course_name']} (ドリンクなし) =====")
+            print(f"説明: {course_a_result_no_drinks['description']}")
+            for dish in course_a_result_no_drinks['dishes_cost']:
+                print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
+            print(f"料理小計: {course_a_result_no_drinks['subtotal_cost']:.2f}")
+            if course_a_result_no_drinks['discount_info']['applied']:
+                print(f"割引 ({course_a_result_no_drinks['discount_info']['condition']}): -{course_a_result_no_drinks['discount_info']['discount_amount']:.2f}")
+            print(f"料理合計原価: {course_a_result_no_drinks['total_food_cost']:.2f}")
+            print(f"ドリンク合計: {course_a_result_no_drinks['drinks_total_cost']:.2f}")
+            print(f"最終合計原価: {course_a_result_no_drinks['total_cost']:.2f}")
+            print("=" * (len(course_a_result_no_drinks['course_name']) + 20))
+
+        print("\n--- コースA (ドリンクあり) ---")
+        course_a_drinks = ["WINE_RED", "ORANGE_JUICE", "INVALID_DRINK"]
+        course_a_result_with_drinks = calculate_course_cost("コースA", prices, selected_drinks=course_a_drinks)
+        if course_a_result_with_drinks:
+            # 結果を整形して表示
+            print(f"\n===== {course_a_result_with_drinks['course_name']} (ドリンク: {', '.join(course_a_drinks)}) =====")
+            print(f"説明: {course_a_result_with_drinks['description']}")
+            for dish in course_a_result_with_drinks['dishes_cost']:
+                print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
+            print(f"料理小計: {course_a_result_with_drinks['subtotal_cost']:.2f}")
+            if course_a_result_with_drinks['discount_info']['applied']:
+                print(f"割引 ({course_a_result_with_drinks['discount_info']['condition']}): -{course_a_result_with_drinks['discount_info']['discount_amount']:.2f}")
+            print(f"料理合計原価: {course_a_result_with_drinks['total_food_cost']:.2f}")
+            print("  --- 選択されたドリンク ---")
+            for drink_item in course_a_result_with_drinks['selected_drinks_info']:
+                print(f"    - {drink_item['name']}: {drink_item['price']:.2f} 円")
+            print(f"ドリンク合計: {course_a_result_with_drinks['drinks_total_cost']:.2f}")
+            print(f"最終合計原価: {course_a_result_with_drinks['total_cost']:.2f}")
+            print("=" * (len(course_a_result_with_drinks['course_name']) + 20))
+
+
+        # --- コースBのテスト (割引あり、ドリンクあり) ---
+        print("\n--- コースB (ドリンクあり、割引期待) ---")
+        # コースBは元々の食材原価が高いので、割引が適用されるはず
+        course_b_drinks = ["CHAMPAGNE", "BEER"]
+        course_b_result_with_drinks = calculate_course_cost("コースB", prices, selected_drinks=course_b_drinks)
+        if course_b_result_with_drinks:
+             # 結果を整形して表示
+            print(f"\n===== {course_b_result_with_drinks['course_name']} (ドリンク: {', '.join(course_b_drinks)}) =====")
+            print(f"説明: {course_b_result_with_drinks['description']}")
+            for dish in course_b_result_with_drinks['dishes_cost']:
+                print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
+            print(f"料理小計: {course_b_result_with_drinks['subtotal_cost']:.2f}")
+            if course_b_result_with_drinks['discount_info']['applied']:
+                print(f"割引 ({course_b_result_with_drinks['discount_info']['condition']}): -{course_b_result_with_drinks['discount_info']['discount_amount']:.2f}")
+            else:
+                print("割引: なし")
+            print(f"料理合計原価: {course_b_result_with_drinks['total_food_cost']:.2f}")
+            print("  --- 選択されたドリンク ---")
+            for drink_item in course_b_result_with_drinks['selected_drinks_info']:
+                print(f"    - {drink_item['name']}: {drink_item['price']:.2f} 円")
+            print(f"ドリンク合計: {course_b_result_with_drinks['drinks_total_cost']:.2f}")
+            print(f"最終合計原価: {course_b_result_with_drinks['total_cost']:.2f}")
+            print("=" * (len(course_b_result_with_drinks['course_name']) + 20))
+
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"処理を中断しました: {e}")
