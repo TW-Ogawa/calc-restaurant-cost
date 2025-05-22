@@ -29,19 +29,15 @@ DeepWiki (または Devin) を使用して、このリポジトリ内の情報�
 
 このドキュメントにより、メニュー開発や価格設定の見直しを行う際に、原価構造を容易に理解できるようにしてください。
 
-## Web Application Usage
+## Web Application for Cost Display
 
-### Setup
-
-Install the required packages using pip:
-```bash
-pip install -r requirements.txt
-```
-
-### Running the Application
-
-Run the web application using:
-```bash
-python app.py
-```
-Open your web browser and navigate to `http://127.0.0.1:5001/` or `http://127.0.0.1:5001/course/コースA` to view the cost display.
+1.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+2.  **Run the application:**
+    ```bash
+    python src/app.py
+    ```
+3.  **Access the application:**
+    Open your web browser and go to `http://127.0.0.1:5000/costs`

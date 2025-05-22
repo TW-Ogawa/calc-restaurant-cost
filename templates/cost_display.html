@@ -3,61 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ course_name }} 原価表示</title>
+    <title>Cost Display</title>
     <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
         }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .total-cost {
-            text-align: center;
-            font-size: 1.5em;
-            margin-bottom: 20px;
+        .course-item, .dish-item, .ingredient-table {
+            margin-bottom: 10px;
             padding: 10px;
-            background-color: #e7e7e7;
-            border-radius: 4px;
+            border: 1px solid #eee;
+            border-radius: 5px;
         }
-        .dish {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .course-item {
+            background-color: #f0f8ff; /* AliceBlue */
         }
-        .dish-header {
+        .dish-item {
+            background-color: #f5f5dc; /* Beige */
+            margin-left: 20px;
+        }
+        .ingredient-table {
+            margin-left: 40px;
+            background-color: #fffafa; /* Snow */
+        }
+        .clickable {
             cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
+            text-decoration: underline;
+            color: blue;
         }
-        .dish-header:hover {
-            background-color: #f0f0f0;
-        }
-        .dish-ingredients {
-            display: none; /* Initially hidden */
-            margin-top: 10px;
-            padding-left: 20px;
-            border-left: 3px solid #007bff;
-        }
-        .ingredient {
-            margin-bottom: 5px;
-            padding: 5px;
-            background-color: #f9f9f9;
-            border-radius: 3px;
-        }
-        .ingredient p {
-            margin: 2px 0;
+        .hidden {
+            display: none;
         }
         table {
             width: 100%;
@@ -75,58 +49,91 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>{{ course_name }} 原価表示</h1>
 
-        <div class="total-cost">
-            <strong>総原価: ¥{{ total_cost | round(2) }}</strong>
-        </div>
+    <h1>Cost Information</h1>
 
-        <h2>料理一覧</h2>
-        {% for dish in dishes_cost %}
-        <div class="dish">
-            <div class="dish-header" onclick="toggleIngredients('ingredients-{{ loop.index }}')">
-                <span>{{ dish.dish_name }}</span>
-                <span>¥{{ dish.cost | round(2) }}</span>
-            </div>
-            <div id="ingredients-{{ loop.index }}" class="dish-ingredients">
-                <h4>材料詳細:</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>材料名</th>
-                            <th>数量</th>
-                            <th>単価 (¥)</th>
-                            <th>小計 (¥)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ingredient in dish.ingredients %}
-                        <tr>
-                            <td>{{ ingredient.name }}</td>
-                            <td>{{ ingredient.quantity }}</td>
-                            <td>{{ ingredient.unit_price | round(2) }}</td>
-                            <td>{{ ingredient.cost | round(2) }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <div id="cost-container">
+        <!-- Course A -->
+        <div class="course-item">
+            <h2 class="clickable" onclick="toggleVisibility('course-A-details')">
+                コースA: {{ course_name }} - Total Cost: {{ total_course_cost }}
+            </h2>
+            <div id="course-A-details" class="course-details hidden">
+                <!-- Dishes for Course A -->
+                <!-- Example Dish 1 -->
+                <div class="dish-item">
+                    <h3 class="clickable" onclick="toggleVisibility('dish-1-ingredients')">
+                        Dish: {{ dish.name }} - Cost: {{ dish.cost }}
+                    </h3>
+                    <div id="dish-1-ingredients" class="dish-details hidden">
+                        <table class="ingredient-table">
+                            <thead>
+                                <tr>
+                                    <th>食材名</th>
+                                    <th>内訳数量</th>
+                                    <th>単価</th>
+                                    <th>金額</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Example Ingredient for Dish 1 -->
+                                <tr>
+                                    <td>{{ ingredient.name }}</td>
+                                    <td>{{ ingredient.quantity }}</td>
+                                    <td>{{ ingredient.unit_price }}</td>
+                                    <td>{{ ingredient.cost }}</td>
+                                </tr>
+                                <!-- Add more ingredient rows here as needed -->
+                                <tr>
+                                    <td>Sample Ingredient 2</td>
+                                    <td>2 kg</td>
+                                    <td>単価不明</td>
+                                    <td>200</td>
+                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Example Dish 2 (can be duplicated for more dishes) -->
+                <div class="dish-item">
+                    <h3 class="clickable" onclick="toggleVisibility('dish-2-ingredients')">
+                        Dish: {{ dish_2.name }} - Cost: {{ dish_2.cost }}
+                    </h3>
+                    <div id="dish-2-ingredients" class="dish-details hidden">
+                         <table class="ingredient-table">
+                            <thead>
+                                <tr>
+                                    <th>食材名</th>
+                                    <th>内訳数量</th>
+                                    <th>単価</th>
+                                    <th>金額</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ ingredient_2_1.name }}</td>
+                                    <td>{{ ingredient_2_1.quantity }}</td>
+                                    <td>{{ ingredient_2_1.unit_price }}</td>
+                                    <td>{{ ingredient_2_1.cost }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- End Dishes -->
             </div>
         </div>
-        {% endfor %}
+        <!-- Add more courses here if needed -->
     </div>
 
     <script>
-        function toggleIngredients(elementId) {
+        function toggleVisibility(elementId) {
             const element = document.getElementById(elementId);
             if (element) {
-                if (element.style.display === 'none' || element.style.display === '') {
-                    element.style.display = 'block';
-                } else {
-                    element.style.display = 'none';
-                }
+                element.classList.toggle('hidden');
             }
         }
     </script>
+
 </body>
 </html>
