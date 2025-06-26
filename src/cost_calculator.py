@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import csv
 from menu_definitions import COURSES, DISHES, DISCOUNT_RULES
 
 # --- データ読み込み ---
@@ -185,6 +186,54 @@ def calculate_course_cost(course_id, ingredient_prices):
         "total_cost": final_course_cost
     }
 
+# --- CSV出力機能 ---
+def export_course_cost_to_csv(course_result, filename):
+    """
+    コースの原価計算結果をCSVファイルに出力する。
+
+    Args:
+        course_result (dict): calculate_course_cost()の戻り値。
+        filename (str): 出力するCSVファイル名。
+    """
+    if not course_result:
+        print(f"エラー: CSV出力のためのコース結果がありません。ファイル名: {filename}")
+        return
+
+    try:
+        with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['項目', '内容', '金額'])
+
+            # コース情報
+            writer.writerow(['コース名', course_result['course_name'], ''])
+            writer.writerow(['説明', course_result['description'], ''])
+
+            # 料理詳細
+            for dish in course_result['dishes_cost']:
+                writer.writerow(['料理', dish['dish_name'], f"{dish['cost']:.2f}"])
+                for ingredient in dish['ingredients']:
+                    cost_str = f"{ingredient['cost']:.2f}" if isinstance(ingredient['cost'], (int, float)) else ingredient['cost']
+                    unit_price_str = f"{ingredient['unit_price']:.2f}" if isinstance(ingredient['unit_price'], (int, float)) else ingredient['unit_price']
+                    writer.writerow(['', f"  {ingredient['name']} ({ingredient['quantity']})", cost_str])
+
+            # 小計
+            writer.writerow(['小計', '', f"{course_result['subtotal_cost']:.2f}"])
+
+            # 割引情報
+            if course_result['discount_info']['applied']:
+                discount_amount = course_result['discount_info']['discount_amount']
+                writer.writerow(['割引', course_result['discount_info']['condition'], f"-{discount_amount:.2f}"])
+
+            # 合計
+            writer.writerow(['合計', '', f"{course_result['total_cost']:.2f}"])
+
+        print(f"コース '{course_result['course_name']}' の原価レポートを {filename} に出力しました。")
+
+    except IOError:
+        print(f"エラー: ファイル '{filename}' の書き込み中にIOエラーが発生しました。")
+    except Exception as e:
+        print(f"エラー: CSVファイル '{filename}' の出力中に予期せぬエラーが発生しました: {e}")
+
 # --- メイン実行ブロック (テスト用) ---
 if __name__ == "__main__":
     try:
@@ -207,6 +256,10 @@ if __name__ == "__main__":
                     print(f"割引 ({course_result['discount_info']['condition']}): -{course_result['discount_info']['discount_amount']:.2f}")
                 print(f"合計原価: {course_result['total_cost']:.2f}")
                 print("=" * (len(course_result['course_name']) + 10))
+
+            # CSVファイルに出力
+            csv_filename = f"{course_result['course_name']}_cost_report.csv"
+            export_course_cost_to_csv(course_result, csv_filename)
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"処理を中断しました: {e}")
