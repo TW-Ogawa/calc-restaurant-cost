@@ -2,35 +2,21 @@
 
 import json
 from menu_definitions import COURSES, DISHES, DISCOUNT_RULES
+from price_manager import PriceManager
 
 # --- データ読み込み ---
 def load_ingredient_prices(filepath="data/ingredient_prices.json"):
     """
-    食材の単価データをJSONファイルから読み込む関数。
+    PriceManagerを使用して食材の単価データを読み込む関数。
 
     Args:
         filepath (str): 食材単価JSONファイルのパス。
 
     Returns:
         dict: 食材名をキー、単価を値とする辞書。
-              ファイルが存在しない、または形式が不正な場合は空の辞書を返す。
-    Raises:
-        FileNotFoundError: 指定されたファイルパスが見つからない場合。
-        json.JSONDecodeError: ファイルの内容が有効なJSONでない場合。
     """
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            # '食材マスタ'キーは説明用なので除外する
-            if "食材マスタ" in data:
-                del data["食材マスタ"]
-            return data
-    except FileNotFoundError:
-        print(f"エラー: 食材単価ファイルが見つかりません: {filepath}")
-        raise # エラーを再送出して上位で処理できるようにする
-    except json.JSONDecodeError:
-        print(f"エラー: 食材単価ファイルのJSON形式が正しくありません: {filepath}")
-        raise # 同上
+    price_manager = PriceManager(data_path=filepath)
+    return price_manager.get_prices()
 
 # --- 計算ロジック ---
 def calculate_dish_cost(dish_id, ingredient_prices):
