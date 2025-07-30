@@ -185,30 +185,15 @@ def calculate_course_cost(course_id, ingredient_prices):
         "total_cost": final_course_cost
     }
 
-# --- メイン実行ブロック (テスト用) ---
+# --- メイン実行ブロック ---
+def main():
+    """
+    このモジュールを直接実行した際の動作。
+    src/cli.py を介して実行されることを想定している。
+    """
+    # CLIのエントリーポイントを呼び出す
+    from cli import main as cli_main
+    cli_main()
+
 if __name__ == "__main__":
-    try:
-        prices = load_ingredient_prices()
-
-        # 全コースの原価を計算して表示
-        for course_id in COURSES:
-            course_result = calculate_course_cost(course_id, prices)
-            if course_result:
-                # 結果を整形して表示（ここでは簡易表示）
-                print(f"\n===== {course_result['course_name']} =====")
-                print(f"説明: {course_result['description']}")
-                for dish in course_result['dishes_cost']:
-                    print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
-                    # 食材詳細も表示する場合は以下をアンコメント
-                    # for ing in dish['ingredients']:
-                    #    print(f"    - {ing['name']} ({ing['quantity']}) @{ing['unit_price']} = {ing['cost']:.2f}")
-                print(f"小計: {course_result['subtotal_cost']:.2f}")
-                if course_result['discount_info']['applied']:
-                    print(f"割引 ({course_result['discount_info']['condition']}): -{course_result['discount_info']['discount_amount']:.2f}")
-                print(f"合計原価: {course_result['total_cost']:.2f}")
-                print("=" * (len(course_result['course_name']) + 10))
-
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"処理を中断しました: {e}")
-    except Exception as e:
-        print(f"予期せぬエラーが発生しました: {e}")
+    main()
