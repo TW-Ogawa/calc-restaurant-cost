@@ -2,6 +2,7 @@
 
 import json
 from menu_definitions import COURSES, DISHES, DISCOUNT_RULES
+from data_validator import validate_ingredient_data, generate_validation_report
 
 # --- データ読み込み ---
 def load_ingredient_prices(filepath="data/ingredient_prices.json"):
@@ -95,7 +96,7 @@ def calculate_course_cost(course_id, ingredient_prices):
 
     Returns:
         dict: コースの原価計算結果を含む辞書。
-              コースが見つからない場合は None を返す。
+              コースが見つからない、またはデータに問題がある場合は None を返す。
 
     辞書の構造:
     {
@@ -114,6 +115,14 @@ def calculate_course_cost(course_id, ingredient_prices):
         'total_cost': 最終的なコース原価
     }
     """
+    # --- データ検証 ---
+    validation_results = validate_ingredient_data()
+    if validation_results["missing_in_prices"]:
+        print("\nエラー: 原価計算を中止しました。データに不整合があります。")
+        report = generate_validation_report(validation_results)
+        print(report)
+        return None # 問題があるため計算を中止
+
     if course_id not in COURSES:
         print(f"エラー: コースID '{course_id}' が定義に存在しません。")
         return None
