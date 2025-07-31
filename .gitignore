@@ -65,3 +65,6 @@ packages/
 
 # プロジェクト固有の設定
 !.gitignore
+
+# Jules
+*.pyc
