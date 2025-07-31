@@ -187,26 +187,60 @@ def calculate_course_cost(course_id, ingredient_prices):
 
 # --- メイン実行ブロック (テスト用) ---
 if __name__ == "__main__":
-    try:
-        prices = load_ingredient_prices()
+    # price_manager のインポート
+    from price_manager import PriceManager
 
-        # 全コースの原価を計算して表示
-        for course_id in COURSES:
-            course_result = calculate_course_cost(course_id, prices)
-            if course_result:
-                # 結果を整形して表示（ここでは簡易表示）
-                print(f"\n===== {course_result['course_name']} =====")
-                print(f"説明: {course_result['description']}")
-                for dish in course_result['dishes_cost']:
-                    print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
-                    # 食材詳細も表示する場合は以下をアンコメント
-                    # for ing in dish['ingredients']:
-                    #    print(f"    - {ing['name']} ({ing['quantity']}) @{ing['unit_price']} = {ing['cost']:.2f}")
-                print(f"小計: {course_result['subtotal_cost']:.2f}")
-                if course_result['discount_info']['applied']:
-                    print(f"割引 ({course_result['discount_info']['condition']}): -{course_result['discount_info']['discount_amount']:.2f}")
-                print(f"合計原価: {course_result['total_cost']:.2f}")
-                print("=" * (len(course_result['course_name']) + 10))
+    try:
+        # --- 価格更新のデモンストレーション ---
+        price_manager = PriceManager()
+
+        # 0. バックアップを作成
+        print("---< バックアップの作成 >---")
+        price_manager.create_backup()
+
+        # 1. 現在の価格で計算
+        print("\n---< 更新前の価格で計算 >---")
+        prices_before = load_ingredient_prices()
+        calculate_course_cost("コースA", prices_before)
+
+        # 2. 価格を更新
+        print("\n---< 価格更新の実行 >---")
+        new_prices = {
+            "食材マスタ": "グラム(g)または個数(piece)あたりの円建て単価",
+            "キャビア": 99.9, # 大幅に値上げ
+            "ホタテ": 30.0,
+            "トリュフオイル": 15.0,
+            "鴨肉": 35.0,
+            "フォアグラ": 65.0,
+            "ジャガイモ": 1.8,
+            "アスパラガス": 6.0,
+            "仔羊肉": 50.0,
+            "ローズマリー": 3.0,
+            "ニンニク": 2.0,
+            "チョコレート": 9.0,
+            "生クリーム": 4.0,
+            "ベリー類": 8.0,
+            "小麦粉": 0.6,
+            "バター": 2.5,
+            "砂糖": 1.0
+        }
+        price_manager.update_prices(new_prices)
+
+        # 3. 更新後の価格で再計算
+        print("\n---< 更新後の価格で計算 >---")
+        prices_after = load_ingredient_prices()
+        calculate_course_cost("コースA", prices_after)
+
+        # 4. 価格をバックアップから復元
+        print("\n---< 価格をバックアップから復元 >---")
+        # 最新のバックアップから復元（update_pricesの際に履歴が作られているはず）
+        price_manager.restore_from_backup()
+
+        # 5. 復元後の価格で再々計算
+        print("\n---< 復元後の価格で計算 >---")
+        prices_restored = load_ingredient_prices()
+        calculate_course_cost("コースA", prices_restored)
+
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"処理を中断しました: {e}")
