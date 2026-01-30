@@ -2,6 +2,11 @@
 
 import json
 from menu_definitions import COURSES, DISHES, DISCOUNT_RULES
+from data_validator import (
+    get_all_ingredients_from_dishes,
+    validate_ingredient_data,
+    report_validation_results
+)
 
 # --- データ読み込み ---
 def load_ingredient_prices(filepath="data/ingredient_prices.json"):
@@ -188,9 +193,29 @@ def calculate_course_cost(course_id, ingredient_prices):
 # --- メイン実行ブロック (テスト用) ---
 if __name__ == "__main__":
     try:
+        # 1. データの読み込み
         prices = load_ingredient_prices()
 
-        # 全コースの原価を計算して表示
+        # 2. データ整合性チェック
+        print("--- データ整合性チェック開始 ---")
+        used_ingredients = get_all_ingredients_from_dishes(DISHES)
+        price_ingredients = set(prices.keys())
+
+        validation_results = validate_ingredient_data(used_ingredients, price_ingredients)
+
+        # レポート生成と表示
+        report = report_validation_results(validation_results, list(price_ingredients))
+        print(report)
+
+        # エラー（単価未定義の食材）がある場合は処理を中断
+        if validation_results["missing_in_prices"]:
+            print("\nエラーが検出されたため、原価計算を中断します。")
+            exit() # スクリプトを終了
+
+        print("--- データ整合性チェック終了 ---")
+
+        # 3. 全コースの原価を計算して表示
+        print("\n--- 全コースの原価計算開始 ---")
         for course_id in COURSES:
             course_result = calculate_course_cost(course_id, prices)
             if course_result:
@@ -199,14 +224,12 @@ if __name__ == "__main__":
                 print(f"説明: {course_result['description']}")
                 for dish in course_result['dishes_cost']:
                     print(f"  料理: {dish['dish_name']} - 原価: {dish['cost']:.2f}")
-                    # 食材詳細も表示する場合は以下をアンコメント
-                    # for ing in dish['ingredients']:
-                    #    print(f"    - {ing['name']} ({ing['quantity']}) @{ing['unit_price']} = {ing['cost']:.2f}")
                 print(f"小計: {course_result['subtotal_cost']:.2f}")
                 if course_result['discount_info']['applied']:
                     print(f"割引 ({course_result['discount_info']['condition']}): -{course_result['discount_info']['discount_amount']:.2f}")
                 print(f"合計原価: {course_result['total_cost']:.2f}")
                 print("=" * (len(course_result['course_name']) + 10))
+        print("\n--- 全コースの原価計算終了 ---")
 
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"処理を中断しました: {e}")
